@@ -14,7 +14,8 @@ class Login: UIViewController {
 
     @IBOutlet weak var user: UITextField!
     @IBOutlet weak var pass: UITextField!
-    
+    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var logo: UIImageView!
     
     @IBAction func login(_ sender: Any) {
         let username = self.user.text
@@ -28,7 +29,6 @@ class Login: UIViewController {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
         request.httpBody = try! JSONSerialization.data(withJSONObject: values)
         
         Alamofire.request(request).responseString{ response in
@@ -47,7 +47,15 @@ class Login: UIViewController {
                         self.present(resultViewController, animated:true, completion:nil)
                         }
                     else{
+                      
+                        let alertController = UIAlertController(title: "Incorrect username or password", message: "Please try again!", preferredStyle: .alert)
                         
+                        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in
+                            print("Not Viewing")
+                        }
+                        alertController.addAction(cancelAction)
+                        
+                        self.present(alertController, animated: true, completion:nil)
                     }
                 
             }

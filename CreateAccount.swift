@@ -38,12 +38,37 @@ class CreateAccount: UIViewController {
             if let data = response.data, let responseString = String(data: data, encoding: .utf8){
                 print("This is responseString: \(responseString)")
                 if(responseString == "true"){
-                    let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
                     
-                    let resultViewController = storyBoard.instantiateViewController(withIdentifier: "mainMenu") as! ViewController
+                    let alertController = UIAlertController(title: "Congratulations your account has been created!", message: "Click continue to head to the main menu and start sharing", preferredStyle: .alert)
                     
-                    self.present(resultViewController, animated:true, completion:nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in
+                        print("Not Viewing")
+                    }
+                    alertController.addAction(cancelAction)
+                    
+                    let OKAction = UIAlertAction(title: "Continue", style: .default) { (action:UIAlertAction!) in
+                        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+                        
+                        let resultViewController = storyBoard.instantiateViewController(withIdentifier: "mainMenu") as! ViewController
+                        
+                        self.present(resultViewController, animated:true, completion:nil)
+                    }
+                    alertController.addAction(OKAction)
+                    
+                    self.present(alertController, animated: true, completion:nil)
+                    
                 }
+                else{
+                    let alertController = UIAlertController(title: "Username taken", message: "Please choose another!", preferredStyle: .alert)
+                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in
+                        print("Not Viewing")
+                    }
+                    alertController.addAction(cancelAction)
+                    
+                    self.present(alertController, animated: true, completion:nil)
+                }
+                
             }
         }
 

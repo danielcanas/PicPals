@@ -8,6 +8,7 @@
 
 import UIKit
 import Alamofire
+import CoreData
 
 class Login: UIViewController {
 
@@ -17,11 +18,12 @@ class Login: UIViewController {
     @IBOutlet weak var logo: UIImageView!
     
     @IBAction func login(_ sender: Any) {
-    
         let username = self.user.text
         let password = self.pass.text
         let values = ["username": username!, "password": password!]
         let url = URL(string: "https://pic-pals.herokuapp.com/login")!
+    
+        GlobalVariables.sharedManager.myName = username!
     
         
         var request = URLRequest(url: url)
@@ -45,6 +47,7 @@ class Login: UIViewController {
                         self.present(resultViewController, animated:true, completion:nil)
                         }
                     else{
+                      
                         let alertController = UIAlertController(title: "Incorrect username or password", message: "Please try again!", preferredStyle: .alert)
                         
                         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in

@@ -10,8 +10,11 @@ import UIKit
 import Alamofire
 import AlamofireImage
 import SwiftyJSON
+import Cosmos
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @IBOutlet var rating: UILabel!
+    @IBOutlet var cosmos: CosmosView!
     @IBOutlet var Pic: UIImageView!
     @IBAction func btnClick(_ sender: AnyObject) {
         let image = UIImagePickerController()
@@ -29,8 +32,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             Pic.image = image
             let data = UIImagePNGRepresentation(image)!
             let name = "\(Int(arc4random_uniform(1000000) + 1))"
+            let sendUser = GlobalVariables.sharedManager.myName.data(using: .utf8)!
             Alamofire.upload(multipartFormData: { (multipartFormData) in
                 multipartFormData.append(data, withName: "image", fileName: "\(name).png", mimeType: "image/png")
+                multipartFormData.append(sendUser, withName: "username")
                 }, to:"https://pic-pals.herokuapp.com/upload")
             { (result) in
                 switch result {
@@ -39,7 +44,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         
                         
                         if let data = result.data, let responseString = String(data: data, encoding: .utf8){
-                            print("\nThis is the responseString: \(responseString)\n")
                             
                             let values = ["username": responseString]
                             let url = URL(string: "https://pic-pals.herokuapp.com/sendPic")!
@@ -61,6 +65,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                                 
                                 let OKAction = UIAlertAction(title: "View", style: .default) { (action:UIAlertAction!) in
                                     self.Pic.image = image
+                                    self.cosmos.isHidden = false
+                                    self.cosmos.didFinishTouchingCosmos = { rating in
+                                    self.rating.isHidden = false
+                                    self.cosmos.settings.updateOnTouch = false
+                                    }
                                     
                                 }
                                 alertController.addAction(OKAction)
@@ -90,7 +99,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+        Pic.layer.borderWidth = 2
+        Pic.layer.masksToBounds = true
+        cosmos.rating = 0
+        cosmos.settings.fillMode = .half
+        cosmos.isHidden = true
+        rating.isHidden = true
         
     }
 
